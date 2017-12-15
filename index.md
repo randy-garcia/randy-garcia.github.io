@@ -1,5 +1,6 @@
 ## Welcome to Portside Labs
 
-still trying to get this all set up.
+a place to post thoughts and creations with a name I pulled out of a hat.    
+still trying to get this all set up.  
 I doubt you have question but just incase <randy@rloop.net>
 
