@@ -1,0 +1,10 @@
+/* Stylesheet by Emilio 'Randy' Garcia, 2018 */
+
+html, body {
+    height: 100%;
+}
+
+#mapid {
+    height: 99%;
+    background: #000;
+}
