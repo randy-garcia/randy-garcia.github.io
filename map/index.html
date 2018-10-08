@@ -37,7 +37,7 @@
             var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',maxZoom: 16});
             
             var frontLayer = new L.GeoJSON.AJAX("geodata/dailyFront/front.geojson");
-             var june20 = new L.GeoJSON.AJAX("geodata/DivLocations/20_june.geojson"); 
+             var june20 = new L.GeoJSON.AJAX("geodata/DivLocations/20_June.geojson"); 
             
             var mymap = L.map('mapid', {
                 center: [49.185396, -0.55481],
