@@ -42,7 +42,7 @@
             var mymap = L.map('mapid', {
                 center: [49.185396, -0.55481],
                 zoom: 8,
-                layers: [streets, frontLayer]
+                layers: [Esri_NatGeoWorldMap, frontLayer]
             }); // declare map and set view
             
             //mymap.setView([39.721184, -104.967327], 12); use this to set view
@@ -63,6 +63,7 @@
             L.control.layers(baseMaps, overlayFront).addTo(mymap); // adding layer contorl to map
             //statesLayer.addTo(mymap);
             
+            
             //test of overlay
             june20.addTo(mymap);
            
@@ -76,7 +77,8 @@
             } // dispays lat long on user click
 
             mymap.on('click', onMapClick); // created a pop up that notes lat long of mouse
-           
+           //frontLayer.bindPopup("this is the front").openPopup();
+            frontLayer.bindTooltip("this is the front").openTooltip();
             //mymap.setView([39.721184, -104.967327], 12); // need to set view after every sequence of new items to center the map
             
             
