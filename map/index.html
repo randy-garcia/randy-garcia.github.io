@@ -14,6 +14,9 @@
             integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
             crossorigin=""></script> <!-- adding ref to leaflet js will be replaced with local links--->
         
+    
+        
+        
 		<link rel="stylesheet" href="css/style.css">
         <script src="lib/leaflet.ajax.min.js"></script>
 		<!--[if IE<9]>
@@ -23,12 +26,14 @@
 	</head>
 
 	<body>
+        <div class = "overlay">
+            <button type="button">hello</button>
+        </div>
         <div id="mapid" style="width:100%"></div>
         
 		<!--put your initial page content here-->
 
 		<script> // include leaflet JS here
-            var sliderControl = null;
             
             var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -66,6 +71,7 @@
             
             //test of overlay
             june20.addTo(mymap);
+            
            
             var popup = L.popup();  // adding the declated GeoJson to map
 
