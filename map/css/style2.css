@@ -20,3 +20,31 @@ html, body {
   bottom: 0;      
   background-color: rgba(255, 50, 50, 0.5);     
 }
+
+
+/* testing delete me */
+.container {
+    position: relative;
+    width: 500px;
+    z-index: 1
+}
+
+.overlay {     
+  width: 100%;
+  position:absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;      
+  background-color: black;
+    opacity: .5;
+    z-index: 3;
+}
+
+button{
+    height:20px; 
+    width:100px; 
+    margin: -20px -50px; 
+    position:relative;
+    top:50%; 
+    left:50%;
+}

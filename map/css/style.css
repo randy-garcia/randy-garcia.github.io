@@ -12,19 +12,19 @@ html, body {
 
 .leaflet-control-layers-toggle {
   background-image: url(/img/mapLayerControl.png) !important;
-	background-color: #002244;
+	background-color: #565656 ;
   background-size: 20px 20px;
 }
 
 .leaflet-touch .leaflet-control-layers-toggle {
 background-image: url(/img/mapLayerControl.png) !important;
-background-color: #002244;
+background-color: #565656 ;
 }
 
 .leaflet-control-layers-expanded {
-  color: white;
+  color: #cfe2e5;
     font-weight: normal;
-	background-color: #2da0e2;
+	background-color: #565656;
 }
 
 
@@ -52,17 +52,17 @@ https://codepen.io/leemark/pen/dGgqLZ
 }
 .leaflet-bar a{
   border-radius: 3px;
-  background-color: #002244;
+  background-color: #565656 ;
   border: 1px solid rgba(0,0,0,.15);
-  color: #2da0e2;
+  color: #cfe2e5;
 }
 .leaflet-bar a:last-child{
   border: 1px solid rgba(0,0,0,.15);
 }
 .leaflet-bar a:hover{
-  background-color: #2da0e2;
+  background-color: #cfe2e5;
   border: 1px solid rgba(0,0,0,.15);
-  color: #002244;
+  color: #565656 ;
 }
 .leaflet-control-zoom-in{
   margin-top: 10px;
@@ -71,30 +71,6 @@ https://codepen.io/leemark/pen/dGgqLZ
   margin-top: 12px;
 }
 
-
-/* testing delete me */
-.container {
-    position: relative;
-    width: 500px;
-    z-index: 1
-}
-
-.overlay {     
-  width: 100%;
-  position:absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;      
-  background-color: black;
-    opacity: .5;
-    z-index: 3;
-}
-
-button{
-    height:20px; 
-    width:100px; 
-    margin: -20px -50px; 
-    position:relative;
-    top:50%; 
-    left:50%;
+.leaflet-slider{
+    margin-bottom: 100px;
 }

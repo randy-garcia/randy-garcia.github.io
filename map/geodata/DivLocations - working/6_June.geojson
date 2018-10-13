@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "6 June",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "231st Inf reg", "description": null, "LONG": "-0.656606122", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.36266453", "DAY": "6", "ICON": "UK-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -0.656606, 49.362665 ] } },
+{ "type": "Feature", "properties": { "Name": "352nd Inf Div", "description": null, "LONG": "-1.056633742", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.22462838", "DAY": "6", "ICON": "us-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -1.056634, 49.224628 ] } },
+{ "type": "Feature", "properties": { "Name": "69th Inf reg", "description": null, "LONG": "-0.488559172", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.34389259", "DAY": "6", "ICON": "us-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -0.488559, 49.343893 ] } },
+{ "type": "Feature", "properties": { "Name": "16th Inf reg", "description": null, "LONG": "-0.861009649", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.36886114", "DAY": "6", "ICON": "us-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -0.86101, 49.368861 ] } },
+{ "type": "Feature", "properties": { "Name": "115th Inf reg", "description": null, "LONG": "-0.949347728", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.40650602", "DAY": "6", "ICON": "us-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -0.949348, 49.406506 ] } },
+{ "type": "Feature", "properties": { "Name": "716th Inf Div", "description": null, "LONG": "-0.343274032", "MONTH": "6", "Field": "Value", "YEAR": "1944", "LAT": "49.09007275", "DAY": "6", "ICON": "us-Inf-Div.gif" }, "geometry": { "type": "Point", "coordinates": [ -0.343274, 49.090073 ] } }
+]
+}
