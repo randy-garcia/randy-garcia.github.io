@@ -1,7 +1,8 @@
 /* Stylesheet by Emilio 'Randy' Garcia, 2018 */
 
 html, body {
-    height: 100%;
+    height: 100%;;
+    background-color: black;
 }
 
 #mapid {
@@ -73,4 +74,83 @@ https://codepen.io/leemark/pen/dGgqLZ
 
 .leaflet-slider{
     margin-bottom: 100px;
+}
+
+/* testing delete me */
+.container {
+    position: relative;
+    width: 500px;
+    z-index: 1
+}
+
+.overlay {     
+  width: 100%;
+  position:absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;      
+  background-color: black;
+    opacity: .8;
+    z-index: 3;
+}
+
+button{
+    height:20px; 
+    width:100px; 
+    margin: -20px -50px; 
+    position:relative;
+    top:50%; 
+    left:50%;
+}
+
+
+
+.overlay-content {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    margin-top: 5%;
+    font-size: 2;
+    font-family: "courier new"
+
+  
+}
+
+.overlay a {
+    padding: 70px;
+    padding-top: 30px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+.overlay .closebtn {
+    position: absolute;
+    top: 30px;
+    right: 45px;
+    font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 1px;
+    right: 3px;
+  }
+}
+
+.title-overlay {
+    padding-top: 10%;
+    position: relative;
+        color: white;
+        font-family: "courier new"
+            
+        
 }
