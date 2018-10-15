@@ -32,19 +32,19 @@
          <div id="preview" class="overlay">
              <div class="title-overlay">
                  <center><h1>Operation Neptune</h1></center>
+                 <!--<button onclick="buttonClick()">Click</button>-->
                  <center><h2>A historical map of military poistions immediately following D-Day</h2></center>
              
              </div>
 
   <!-- Button to close the overlay navigation -->
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav();buttonClick()">&times;</a>
           <!-- Overlay content -->
           <div class="overlay-content">
-    
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/RIIN0Ug8wg8?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><font size="6">
-            <a href="https://en.wikipedia.org/wiki/Normandy_landings">The Normandy landings were the landing operations on Tuesday, 6 June 1944 of the Allied invasion of Normandy in Operation Overlord during World War II. Codenamed Operation Neptune and often referred to as D-Day, it was the largest seaborne invasion in history. The operation began the liberation of German-occupied France (and later Europe) from Nazi control, and laid the foundations of the Allied victory on the Western Front.</a></font>
-            
-            <h1>this is test</h1>
+           <center> <div class="videowrapper "><iframe width="560" height="315" src="https://www.youtube.com/embed/RIIN0Ug8wg8?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div></center>
+              <font size="6">
+            <a href="https://en.wikipedia.org/wiki/Normandy_landings">The Normandy landings were the landing operations on Tuesday, 6 June 1944 of the Allied invasion of Normandy in Operation Overlord during World War II. Codenamed Operation Neptune and often referred to as D-Day, it was the largest seaborne invasion in history. The operation began the liberation of German-occupied France (and later Europe) from Nazi control, and laid the foundations of the Allied victory on the Western Front. (Source: Wikipedia)</a></font>
+       
               <script>
                 function closeNav() {
                   document.getElementById("preview").style.display = "none";
@@ -85,7 +85,7 @@
             
             var mymap = L.map('mapid', {
                 center: [49.185396, -0.55481],
-                zoom: 8,
+                zoom: 3,
                 layers: [Esri_NatGeoWorldMap, frontLayer]
             }); // declare map and set view
             
@@ -97,12 +97,14 @@
                 "Esri World Imagery": Esri_WorldImagery,
                 "WWII Style": mapboxWWII
             };
-            
+            function buttonClick(){
+                mymap.flyTo([49.185396, -0.55481], 9);
+            };
             var overlayFront = {
                 "Key Front Lines": frontLayer
             };
             
-            mymap.setView([49.185396, -0.55481], 9);
+            mymap.setView([49.185396, -0.55481], 3);
             //Esri_NatGeoWorldMap.addTo(mymap); //using to just set basemap
             
             L.control.layers(baseMaps, overlayFront).addTo(mymap); // adding layer contorl to map
