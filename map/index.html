@@ -5,17 +5,16 @@
 		<meta name="viewport" content="width=device-width">
 		<title>Operation Overloard</title>
 
-        <!-- only using for testing slider, will be changed to local paths -->
-        <link rel="stylesheet" href="lib/leaflet.css"/> <!-- Adding ref to leaflet css, will be replaced with local links--->
+        <link rel="stylesheet" href="lib/leaflet.css"/> <!-- leaflet CSS style sheet declaration--->
         
-        <script src="lib/leaflet.js"></script> <!-- adding ref to leaflet js will be replaced with local links--->
-        <link rel="stylesheet" href="lib/jquery-ui.css" type="text/css">
+        <script src="lib/leaflet.js"></script> <!-- Leaflet JS  declaration--->
+        <link rel="stylesheet" href="lib/jquery-ui.css" type="text/css"> <!-- JQuery UI Style sheet declaration--->
     
         
         
-		<link rel="stylesheet" href="css/style.css">
-        <script src="lib/leaflet.ajax.min.js"></script>
-        <script src="js/troops.js"></script>
+		<link rel="stylesheet" href="css/style.css"> <!-- CSS style sheet declaration--->
+        <script src="lib/leaflet.ajax.min.js"></script> <!-- AJAX min JS  declaration--->
+        <script src="js/troops.js"></script> <!-- data declaration--->
 		<!--[if IE<9]>
 			<link rel="stylesheet" href="css/style.ie.css">
 		<![endif]-->
@@ -24,31 +23,32 @@
 
 	<body>
         <!-- update with local paths -->
-        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
-        <script src="lib/SliderControl.js" type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script><!-- JQuery js  declaration--->
+        <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script> <!-- JQuery ui declaration--->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script><!-- Jquery mobile/touch  declaration--->
+        <script src="lib/SliderControl.js" type="text/javascript"></script><!-- slider js declaration--->
         
-         <div id="preview" class="overlay">
+         <div id="preview" class="overlay"><!-- Adding an overlay for info about project--->
              <div class="title-overlay">
-                 <center><h1>Operation Neptune</h1></center>
+                 <center><h1>Operation Neptune</h1></center><!-- project title--->
                  <!--<button onclick="buttonClick()">Click</button>-->
                  <center><h2>A historical map of military poistions immediately following D-Day</h2></center>
+                 <center><h3><a href="http://www.randygarcia.xyz">By Randy Garcia</a></h3></center>
              
              </div>
 
   <!-- Button to close the overlay navigation -->
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav();buttonClick()">&times;</a>
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav();buttonClick()">&times;</a> <!-- close button onoverlay, help gathered from W3 Schools--->
           <!-- Overlay content -->
           <div class="overlay-content">
-           <center> <div class="videowrapper "><iframe width="560" height="315" src="https://www.youtube.com/embed/RIIN0Ug8wg8?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div></center>
+           <center> <div class="videowrapper "><iframe width="560" height="315" src="https://www.youtube.com/embed/RIIN0Ug8wg8?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div></center> <!-- Adding the youtube video embed to the overlay--->
               <font size="6">
-            <a href="https://en.wikipedia.org/wiki/Normandy_landings">The Normandy landings were the landing operations on Tuesday, 6 June 1944 of the Allied invasion of Normandy in Operation Overlord during World War II. Codenamed Operation Neptune and often referred to as D-Day, it was the largest seaborne invasion in history. The operation began the liberation of German-occupied France (and later Europe) from Nazi control, and laid the foundations of the Allied victory on the Western Front. (Source: Wikipedia)</a></font>
+            <a href="https://en.wikipedia.org/wiki/Normandy_landings">The Normandy landings were the landing operations on Tuesday, 6 June 1944 of the Allied invasion of Normandy in Operation Overlord during World War II. Codenamed Operation Neptune and often referred to as D-Day, it was the largest seaborne invasion in history. The operation began the liberation of German-occupied France (and later Europe) from Nazi control, and laid the foundations of the Allied victory on the Western Front. (Source: Wikipedia)</a></font> <!-- Info about D Day referencing Wikipedia--->
        
-              <script>
+              <script> // Non Leaflet JS
                 function closeNav() {
                   document.getElementById("preview").style.display = "none";
-                }
+                } // js that is used to close the overlay help from W3 Schools
                 </script>
           </div>
 
@@ -62,17 +62,17 @@
 
 		<script> // include leaflet JS here
             
-            var sliderControl = null;
+            var sliderControl = null; // define empty slider variable
             var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors Data: <a href="https://www.usna.edu/Users/oceano/pguth/website/kml/normandy.htm" target="_blank">United States Naval Academy</a>'
             }); // osm declaration of var
             var Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC Data: <a href="https://www.usna.edu/Users/oceano/pguth/website/kml/normandy.htm" target="_blank">United States Naval Academy</a>',maxZoom: 16}); // esri baemap declaration
-            var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC Data: <a href="https://www.usna.edu/Users/oceano/pguth/website/kml/normandy.htm" target="_blank">United States Naval Academy</a>',maxZoom: 16});
+            var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC Data: <a href="https://www.usna.edu/Users/oceano/pguth/website/kml/normandy.htm" target="_blank">United States Naval Academy</a>',maxZoom: 16}); // Esri world Imagery
             var mapboxWWII = L.tileLayer('https://api.mapbox.com/styles/v1/randy-garcia/cjgig6cya000c2sqbwziemasa/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicmFuZHktZ2FyY2lhIiwiYSI6ImNpeHZ4dzd0cjAwMHgyd3Fxc3AzMTJmdHYifQ.KHY2-8F3pVDCBJhShln7yA', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a> Data: <a href="https://www.usna.edu/Users/oceano/pguth/website/kml/normandy.htm" target="_blank">United States Naval Academy</a>',
             maxZoom: 18,
             id: 'mapbox://styles/randy-garcia/cjgig6cya000c2sqbwziemasa',
-            accessToken: 'pk.eyJ1IjoicmFuZHktZ2FyY2lhIiwiYSI6ImNpeHZ4dzd0cjAwMHgyd3Fxc3AzMTJmdHYifQ.KHY2-8F3pVDCBJhShln7yA'});
+            accessToken: 'pk.eyJ1IjoicmFuZHktZ2FyY2lhIiwiYSI6ImNpeHZ4dzd0cjAwMHgyd3Fxc3AzMTJmdHYifQ.KHY2-8F3pVDCBJhShln7yA'}); // mapbox custom tile set basemap
             
             var frontLayer = new L.GeoJSON.AJAX("geodata/dailyFront/front.geojson", {color: "red",
                 onEachFeature: function(feature, layer) {
@@ -80,36 +80,34 @@
                 content = "<b>Front Line:</b> " + feature.properties.Name;
                 layer.bindTooltip(content);
                 }
-                });
+                }); //loading front line GeoJson data into a variable that will display the front lines along with a tool tip declaring the date of the front line
  
             
             var mymap = L.map('mapid', {
                 center: [49.185396, -0.55481],
                 zoom: 3,
-                layers: [Esri_NatGeoWorldMap, frontLayer]
+                layers: [Esri_NatGeoWorldMap, frontLayer] // adding the base layers of Esri NatGeo Map and the front layer
             }); // declare map and set view
             
-            //mymap.setView([39.721184, -104.967327], 12); use this to set view
-            
+
             var baseMaps = {
                  
                 "NatGeo World Map": Esri_NatGeoWorldMap,
                 "Esri World Imagery": Esri_WorldImagery,
                 "WWII Style": mapboxWWII
-            };
+            }; // creating a variable that will hold the layers that a user can select between. This is will be added to a user controrl in the map set by leaflet
             function buttonClick(){
                 mymap.flyTo([49.185396, -0.55481], 9);
-            };
+            };// function that zooms the map to the D Day location after the user closes the initial overlay
             var overlayFront = {
                 "Key Front Lines": frontLayer
-            };
+            };// adds front line layer to the user layer control 
             
-            mymap.setView([49.185396, -0.55481], 3);
-            //Esri_NatGeoWorldMap.addTo(mymap); //using to just set basemap
+    
             
             L.control.layers(baseMaps, overlayFront).addTo(mymap); // adding layer contorl to map
             
-            //test of overlay
+            //getting the json data that contains the points of troop locations 
             $.getJSON("troops.json", function(json) {
 
             var groundTroops = L.geoJson(json, {
@@ -118,25 +116,24 @@
                 content = "<b>Unit:</b> " + feature.properties.Name + "<br><b>Day:</b> " + feature.properties.DAY + "<br><b>Month:</b> " + feature.properties.MONTH + "<br><b>Year:</b> " + feature.properties.YEAR;
                 layer.bindPopup(content);
                 }
-                });
+                }); // troops json along with adding a popup on click of the item that displays the info attached to each point
                 
 
             var sliderControl = L.control.sliderControl({
                 position: "bottomright",
                 layer: groundTroops,
                 range: true,
-                });
+                }); // addinng a slider control to a variable that will allow the user to adjust items on map based on the data layer of the troops json data
 
             
-            mymap.addControl(sliderControl);
+            mymap.addControl(sliderControl); // adding the slider control declared above to the map
            
             sliderControl.startSlider();
-            });
+            }); // starts the data slider also declared above
             
             
         </script>
 
-		<!--put your external script links here-->
-		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/main.js"></script> 
 	</body>
 </html>

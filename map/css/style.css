@@ -110,7 +110,7 @@ button{
     position: absolute;
     width: 100%;
     text-align: center;
-    margin-top: 5%;
+    margin-top: 0%;
     font-size: 2;
     font-family: "courier new"
 
@@ -134,7 +134,7 @@ button{
 .overlay .closebtn {
     position: absolute;
     top: -30px;
-    right: 0px;
+    right: 0;
     font-size: 60px;
 }
 
@@ -148,7 +148,7 @@ button{
 }
 
 .title-overlay {
-    padding-top: 10%;
+    padding-top: 5%;
     position: relative;
         color: white;
         font-family: "courier new"
