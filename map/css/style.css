@@ -145,6 +145,7 @@ button{
     top: 1px;
     right: 3px;
   }
+    
 }
 
 .title-overlay {
@@ -175,3 +176,34 @@ button{
         height: 100%;
 
     }
+
+#legend {
+  position: absolute;
+  height: 100px;
+  width: 200px;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2000;
+  background: #565656;
+    border: 200px;
+  color: #cfe2e5;
+    border: solid black 4px;
+  padding: 5px;
+    font-family: "courier new";
+    font-size: 15px;
+    padding-left: 15px; 
+    padding-bottom: 25px;
+    
+
+}
+
+@media screen and (max-width: 600px) {
+  #legend {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+  }
+}

@@ -56,7 +56,14 @@
 </div>
             
       
-        <div id="mapid" style="width:100%"></div>
+        <div id="mapid" style="width:100%">
+         <div id="legend">
+             <center><u>Legend</u></center>
+             <p><img src="img/marker-icon.png" alt="Marker Icon" width="20" height="20"> Troops</p>
+            <p><img src="img/line.png" alt="Front Line" width="20" height="20"> Front Line</p> <!-- adding a legend -->
+             
+        </div>
+        </div>
         
 		<!--put your initial page content here-->
 
@@ -107,6 +114,8 @@
             
             L.control.layers(baseMaps, overlayFront).addTo(mymap); // adding layer contorl to map
             
+
+            
             //getting the json data that contains the points of troop locations 
             $.getJSON("troops.json", function(json) {
 
@@ -124,7 +133,8 @@
                 layer: groundTroops,
                 range: true,
                 }); // addinng a slider control to a variable that will allow the user to adjust items on map based on the data layer of the troops json data
-
+                
+                
             
             mymap.addControl(sliderControl); // adding the slider control declared above to the map
            
