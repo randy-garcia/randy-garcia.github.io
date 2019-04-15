@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <!--
+  ArcGIS API for JavaScript, https://js.arcgis.com
+  For more information about the sketch-3d sample, read the original sample description at developers.arcgis.com.
+  https://developers.arcgis.com/javascript/latest/sample-code/sketch-3d/index.html
+  -->
+<title>Gates of the Artic National Park Reporter</title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css"/>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://js.arcgis.com/4.11/"></script>
+    <script src="js/map.js"></script>
+  </head>
+  <body>
+    <div id="header"><h1>National Park Reporter</h1>
+        <br></p></div>
+    <div style="width: 100%;">
+        <div id="menu">
+                <div><label>lat:&nbsp</label><input placeholder="Your telephone number" name="report_lat"></div>
+                <div><label>lon:&nbsp</label><input placeholder="Your email address" name="report_lon"></div>
+                <div><label>report_name:&nbsp</label><input placeholder="Contact's first name" name="report_name"></div>
+                <div><label>report_type:&nbsp</label><input placeholder="Contact's last name" name="report_type"></div>
+                <div><label>report_notes:&nbsp</label><input placeholder="Contact's telephone number" name="report_notes"></div>
+                <div><label>report_object:&nbsp</label><input placeholder="Contact's email address" name="report_object"></div>
+        </div>
+        <div id="map">
+                <div id="viewDiv"></div>
+                <div id="sketchPanel" class="esri-widget">
+                    <button id="extrudedPolygon" data-type="polygon" class="esri-button">
+                    Draw a building
+                    </button>
+                    <button id="point" data-type="point" class="esri-button">
+                    Draw a point of interest
+                    </button>
+                    <button id="line" data-type="polyline" class="esri-button">
+                    Draw a route
+                    </button>
+                    <button id="report" class="button">reportGeometry</button>
+                </div>
+        </div>
+        <br style="clear: left;" />
+    </div>
+  
+  </body>
+</html>

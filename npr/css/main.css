@@ -1,0 +1,43 @@
+html,
+body,
+#viewDiv {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#sketchPanel {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.esri-button {
+  margin: 2px;
+}
+
+#menu{
+  float: left; 
+  width: 30%;
+  background-color: olive;
+  z-index: 99;
+  opacity: 50%;
+  height:100vh;
+  display: block;
+  
+}
+
+#map{
+  float: left; 
+  width: 70%;
+  height: 100%;
+  background-color:black
+  z-index: 1;
+}
+
+#header{
+  background-color: black;
+  color: white;
+  width: 100%;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
