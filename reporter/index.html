@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <!--
+  ArcGIS API for JavaScript, https://js.arcgis.com
+  For more information about the sketch-3d sample, read the original sample description at developers.arcgis.com.
+  https://developers.arcgis.com/javascript/latest/sample-code/sketch-3d/index.html
+  -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css"/>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://js.arcgis.com/4.11/"></script>
+    <script src="js/map.js"></script>
+    <script src="js/show.js"></script>
+
+<!--     <script src="js/send.js"></script> -->
+
+  </head>
+  <body>
+    
+    <div id="header"><h1>&nbsp&nbspNational Park Trail Reporter </h1></div>
+    <div style="width: 100%;">
+        <div id="container">
+        </div>
+        <div id="map">
+            <div id="optionsDiv">
+                <button id="default">Glacier National Park Example</button>
+              </div>
+            <div id="viewDiv"></div>
+            <div id="sketchPanel" class="esri-widget">
+                <div id='dropdown'>
+                    <select id="parkselect" >
+                        <!-- style="width:100%;max-width:50%;" -->
+                        <option id = "loading" selected disabled>Loading Please Wait</option>
+                        <!-- <option selected disabled>Choose a Park</option> -->
+                    </select>
+                 </div><br>
+              <button id="line" data-type="polyline" class="esri-button" name="drawroute">
+                Draw a route
+              </button>
+
+        </div>
+        <br style="clear: left;" />
+    </div>
+    <div id="footer">
+      <div id = "bottomtext">
+      <cetner>
+        <a href="./about.html" style="color:grey">About this Project</a>
+      <a href="http://randygarcia.xyz" target="_blank" style="color:grey">Randy Garcia - 2019</a></cetner></div>
+    </div>
+  </body>
+</html>
