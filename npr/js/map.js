@@ -12,26 +12,32 @@ require([
   "esri/Basemap",
   "esri/geometry/support/webMercatorUtils",
   "esri/widgets/Expand",
-  "esri/widgets/BasemapGallery"
+  "esri/widgets/BasemapGallery",
+  "esri/geometry/Polyline",
+  "esri/symbols/SimpleLineSymbol",
+  "esri/renderers/UniqueValueRenderer"
 ], function(
-  Map,
-  SceneView,
-  GraphicsLayer,
-  FeatureLayer,
-  GeoJSONLayer,
-  Graphic,
-  SketchViewModel,
-  WebStyleSymbol,
-  Query,
-  SpatialReference,
-  Basemap,
-  webMercatorUtils,
-  Expand,
-  BasemapGallery
+    Map,
+    SceneView,
+    GraphicsLayer,
+    FeatureLayer,
+    GeoJSONLayer,
+    Graphic,
+    SketchViewModel,
+    WebStyleSymbol,
+    Query,
+    SpatialReference,
+    Basemap,
+    webMercatorUtils,
+    Expand,
+    BasemapGallery,
+    Polyline,
+    SimpleLineSymbol,
+    UniqueValueRenderer
 ) {
   // the layer where the graphics are sketched
   const gLayer = new GraphicsLayer();
-  
+
 
   var basemap = new Basemap({
     portalItem: {
@@ -50,14 +56,9 @@ require([
     container: "viewDiv",
     map: map,
     camera: {
-      //position: [-98.58, 39.83,  19899000],
-/*       position: [-105.6050, 40.3528, 3000],
-      heading: -90,
-      tilt: 85.35 */ //rocky mountain np
-
-      position: [-121.78369566084515, 46.99354698643403, 4000],
-      heading: 165,
-      tilt: 77.35
+      position: [-98.634766, 13.503629, 5000000],
+      heading: 0,
+      tilt: 30.35
     },
   });
 
@@ -81,61 +82,104 @@ require([
 
   basemapGallery.watch("activeBasemap", function() {
     var mobileSize =
-      view.heightBreakpoint === "xsmall" ||
-      view.widthBreakpoint === "xsmall";
+        view.heightBreakpoint === "xsmall" ||
+        view.widthBreakpoint === "xsmall";
 
     if (mobileSize) {
       bgExpand.collapse();
     }
   });
 
+  var polyline = new Polyline({
+    paths: [
+      [-118.29026, 34.1816],
+      [-118.26451, 34.09664]
+    ]
+  });
+
+  // Create a symbol for drawing the line
+  var lineSymbol = new SimpleLineSymbol({
+    color: [226, 119, 40],
+    width: 4
+  });
+
+  // Create a line graphic
+  var polylineGraphic = new Graphic({
+    geometry: polyline,
+    symbol: lineSymbol
+  })
+
+  // Add the graphic to the view
+  view.graphics.add(polylineGraphic);
+
   // Add the expand instance to the ui
 
   view.ui.add(bgExpand, "bottom-right");
-  const url =
-  "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
-  const poiJSON = 
-  "data/poi.geojson";
+const class1 = {
+  type: "simple-line", // autocasts as new SimpleLineSymbol()
+  //color: "#30ffea",
+  color: "green",
+  width: 3,
+  style: "solid"
+};
+
+const class2 = {
+  type: "simple-line", // autocasts as new SimpleLineSymbol()
+  //color: "#ff6207",
+  color: "yellow",
+  width: 3,
+  style: "solid"
+};
+
+const class3 = {
+  type: "simple-line", // autocasts as new SimpleLineSymbol()
+  //color: "#ef37ac",
+  color: "orange",
+  width: 3,
+  style: "solid"
+};
+  const url =
+      "https://opendata.arcgis.com/datasets/4746b25f893a4e25b94ab571e8c4cf3d_0.geojson";
+
+  const poiJSON =
+      "data/poi.geojson";
 
   const template = {
-    title: "Earthquake Info",
-    content: "Magnitude {mag} {type} hit {place} on {time:DateString}"
+    title: "Trail Info",
+    content: "<b>Trail Name:</b> {NAME} <br> <b>Type:</b> Class {CLASS} <br> <b>Notes:</b> {TRLFEATTYPE}"
   };
 
   const renderer = {
-    type: "simple",
-    field: "mag",
-    symbol: {
-      type: "simple-marker",
-      color: "orange",
-      outline: {
-        color: "white"
-      }
-    },
-    visualVariables: [
+    type: "unique-value", // autocasts as new UniqueValueRenderer()
+    field: "CLASS",
+    defaultSymbol: class1, // used to visualize all features not matching specified types
+    defaultLabel: "Other trails", //  used in the legend for all other types not specified
+    // used for specifying unique values
+    uniqueValueInfos: [
       {
-        type: "size",
-        field: "mag",
-        stops: [
-          {
-            value: 2.5,
-            size: "4px"
-          },
-          {
-            value: 8,
-            size: "40px"
-          }
-        ]
+        value: "1", // code for Class 1
+        symbol: class1,
+        label: "template" // used in the legend to describe features with this symbol
+      },
+      {
+        value: "2", // code for class 2
+        symbol: class2,
+        label: "template" // used in the legend to describe features with this symbol
+      },
+      {
+        value: "3", // code for class 3
+        symbol: class3,
+        label: "template" // used in the legend to describe features with this symbol
       }
     ]
   };
 
   const geojsonLayer = new GeoJSONLayer({
     url: url,
-    copyright: "USGS Earthquakes",
+    copyright: "National Park Service",
     popupTemplate: template,
-    renderer: renderer //optional
+    renderer: renderer
   });
 
   const poijsonlayer = new GeoJSONLayer({
@@ -173,7 +217,6 @@ require([
   };
 
   const labelClass2 = {
-    // When using callouts on labels, "above-center" is the only allowed position
     labelPlacement: "above-center",
     labelExpressionInfo: {
       expression: "$feature.UNIT_NAME"
@@ -193,14 +236,12 @@ require([
           size: 10
         }
       ],
-      // Labels need a small vertical offset that will be used by the callout
+
       verticalOffset: {
         screenLength: 150,
         maxWorldLength: 2000,
         minWorldLength: 30
       },
-      // The callout has to have a defined type (currently only line is possible)
-      // The size, the color and the border color can be customized
       callout: {
         type: "line", // autocasts as new LineCallout3D()
         size: 0.5,
@@ -214,78 +255,92 @@ require([
 
   var parkBound = new FeatureLayer({
     url:
-      "https://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/NPS_Park_Boundaries/FeatureServer/0",
+        "https://services1.arcgis.com/fBc8EJBxQRMcHlei/ArcGIS/rest/services/NPS_Park_Boundaries/FeatureServer/0",
     labelingInfo: [labelClass2]
   });
-
-  console.log(parkBound.fields)
 
   parkBound.renderer = {
     type: "simple",  // autocasts as new SimpleRenderer()
     symbol: {
-        "color": [26, 26, 26, 255],
-        "width": 4,
-        "type": "simple-line",
-        "style": "dot"
+      "color": [26, 26, 26, 255],
+      "width": 4,
+      "type": "simple-line",
+      "style": "dot"
     }
   };
 
   $('#parkselect').on('change', function() {
-    view.goTo(parks[this.value]);
+    view.goTo(parks[this.value],{tilt: 40});
   });
 
   function sortlist() {
     var options = $('#parkselect option');
     var arr = options.map(function(_, o) {
-        return {
-            t: $(o).text(),
-            v: o.value
-        };
+      return {
+        t: $(o).text(),
+        v: o.value
+      };
     }).get();
     arr.sort(function(o1, o2) {
-        return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0;
+      return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0;
     });
     options.each(function(i, o) {
-        console.log(i);
-        o.value = arr[i].v;
-        $(o).text(arr[i].t);
+      o.value = arr[i].v;
+      $(o).text(arr[i].t);
     });
-};
+  };
 
   map.add(parkBound);
 
   var query = parkBound.createQuery();
   query.outFields = ["UNIT_NAME"];
   var parkslist = [];
-  //query list of parks, this is slow, might want to hardcode
   parkBound.queryFeatures(query)
-  .then(function(response){
-    parks = response.features;
-    var parkselect = document.getElementById("parkselect");
-    var i;
-      for (i = 0; i < parks.length; i++) { 
-        currentPark = response.features[i].attributes.UNIT_NAME;
-        parkslist.push(response.features[i].attributes.UNIT_NAME);
-        //console.log(currentPark);
-        //need to figure out how to append to combobox
-        //console.log(i);
-        parkvalue = i++;
-        //console.log("value plus" + parkvalue) ;
-        $('#parkselect').append('<option value='+parkvalue+'>'+currentPark+'</option>');
-    };
-    //console.log(parkslist);
-    sortlist();
-    document.getElementById("loading").innerHTML = "Select a Park";
-    //parkselect.remove(0);
-   });
+      .then(function(response){
+        parks = response.features;
+        var parkselect = document.getElementById("parkselect");
+        var i;
+        for (i = 0; i < parks.length; i++) {
+          currentPark = response.features[i].attributes.UNIT_NAME;
+          parkslist.push(response.features[i].attributes.UNIT_NAME);
+          parkvalue = i++;
+          $('#parkselect').append('<option value='+parkvalue+'>'+currentPark+'</option>');
+        };
+        sortlist();
+        document.getElementById("loading").innerHTML = "Select a Park";
+      });
 
 
+      function shiftCamera(deg) {
+        var camera = view.camera.clone();
+        camera.position.longitude += deg;
+        return camera;
+      }
+
+      document
+        .getElementById("default")
+        .addEventListener("click", function() {
+          view.goTo(
+            {
+                position: {
+                  x: -113.93,
+                  y: 48.60,
+                  z: 2500,
+                  spatialReference: {
+                    wkid: 4326
+                  }
+              },
+              heading: 45,
+              tilt: 85
+            },
+          );
+        });
 
 
   const blue = [82, 82, 122, 0.9];
   const white = [255, 255, 255, 0.8];
 
-  // polygon symbol used for sketching the extruded building footprints
+  // polygon symbol used for future implementation
   const extrudedPolygon = {
     type: "polygon-3d",
     symbolLayers: [
@@ -325,7 +380,7 @@ require([
     ]
   };
 
-  // point symbol used for sketching points of interest
+  // point symbol used for future implementation
   const point = {
     type: "point-3d",
     symbolLayers: [
@@ -343,59 +398,42 @@ require([
       }
     ]
   };
- 
-  cpcoord = []
+  var lineid = 0;
+  cpcoord = [];
   function crackPaths(){
-    //pathstr = path.toString();
-    //pathstr = pathstr.replace(/([-\d.]+),([-\d.]+),?/g, '$1 $2, ').trim();
-    //console.log(path.length);
     var i;
-    for (i = 0; i < path.length; i++) { 
-      var test = webMercatorUtils.xyToLngLat(path[i][0], path[i][1]);
-      console.log(test);
+    for (i = 0; i < path.length; i++) {
+      var test = webMercatorUtils.xyToLngLat(path[i][lineid], path[i][lineid]);
       cpcoord.push(test);
-      //console.log(test);
-  };
-/*     var x = 0;
-  var len = cpcoord.length
-  console.log(len)
-  while(x < len){ 
-      cpcoord[x] = parseFloat(cpcoord[x]).toFixed(2); 
-      x++
-  }; */
+    };
     cpcoordstr = cpcoord.toString();
+    bracektscoord = cpcoordstr.replace(/([-\d.]+),([-\d.]+),?/g, '[$1, $2], ').trim();
     cpcoordstr = cpcoordstr.replace(/([-\d.]+),([-\d.]+),?/g, '$1 $2, ').trim();
-    //console.log(cpcoordstr);
   };
 
-/*   document.getElementById("report").addEventListener("click",function reporter(){
+  function reporter(){
     var objects = gLayer.graphics;
-    var pointLat = gLayer.graphics.items[0].geometry.latitude;
-    var pointLon = gLayer.graphics.items[0].geometry.longitude;
-    prepath = gLayer.graphics.items[0].geometry.paths;
-    path = gLayer.graphics.items[0].geometry.paths[0];
+    var pointLat = gLayer.graphics.items[lineid].geometry.latitude;
+    var pointLon = gLayer.graphics.items[lineid].geometry.longitude;
+    prepath = gLayer.graphics.items[lineid].geometry.paths;
+    path = gLayer.graphics.items[lineid].geometry.paths[lineid];
     crackPaths();
-    console.log(objects);
-    //console.log(gLayer.graphics.items[0]);
-    //console.log(pointLat + "" + pointLon);
-    //console.log(objects);
-    //console.log(gLayer.graphics.items[1].symbol.type);
+  };
+
+  function sendRequest(searchTerm) {
+    var url = "http://127.0.0.1:5500/index.html";
+    url += '?' + $.param({
+      'api-key': cpcoordstr,
+      'end_date': "19440606",
+      'sort': "newest"
     });
- */
-    function reporter(){
-      var objects = gLayer.graphics;
-      var pointLat = gLayer.graphics.items[0].geometry.latitude;
-      var pointLon = gLayer.graphics.items[0].geometry.longitude;
-      prepath = gLayer.graphics.items[0].geometry.paths;
-      path = gLayer.graphics.items[0].geometry.paths[0];
-      crackPaths();
-      //console.log(objects);
-      //console.log(gLayer.graphics.items[0]);
-      //console.log(pointLat + "" + pointLon);
-      //console.log(objects);
-      //console.log(gLayer.graphics.items[1].symbol.type);
-      };
-  // define the SketchViewModel and pass in the symbols for each geometry type
+    return $.ajax({
+      url: url,
+      method: 'GET',
+      q: searchTerm,
+    });
+  };
+
   const sketchVM = new SketchViewModel({
     layer: gLayer,
     view: view,
@@ -420,12 +458,36 @@ require([
       sketchVM.update(event.graphic);
       deactivateButtons();
       reporter();
-      console.log("these are the coordinates to pass: " + cpcoordstr);
+      $('#line').after(`   <div id="menu">
+      <br>
+        <form id = "create_report_form">
+            <div><label>Trail Name:&nbsp</label><input placeholder="" name="report_name"></div><br>
+        <div>
+            <label>Difficulty:&nbsp&nbsp&nbsp</label> 
+          <select name="report_type">
+            <option name="report_type" value="class1">Class 1</option>
+            <option name="report_type" value="class2">Class 2</option>
+            <option name="report_type" value="class3">Class 3</option>
+            <option name="report_type" value="class4">Class 4</option>
+            <option name="report_type" value="class5">Class 5</option>
+            <option name="report_type" value="unk">unknown</option>
+          </select>&nbsp&nbsp<a href="http://climber.org/data/decimal.html" target="_blank">&#10067;</a>
+
+        </div><br>
+        <div><label>Notes:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label><input placeholder="" name="report_notes"></div><br>
+        <div><label>Coordiantes:&nbsp</label><input placeholder="" name="report_object" value="` + cpcoordstr + '" readonly></div><br>' +
+          '<button type="submit" class="esri-button" id="report_submit_btn" onclick="reportall()">'+
+          '<span ></span> Submit'+
+          '</button>'+
+          '</form>'+
+          '</div>');
+      lineid++;
+      cpcoord = [];
     }
   });
 
   const drawButtons = Array.prototype.slice.call(
-    document.getElementsByClassName("esri-button")
+      document.getElementsByClassName("esri-button")
   );
 
   // set event listeners to activate sketching graphics
