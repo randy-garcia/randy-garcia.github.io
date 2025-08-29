@@ -1,1 +1,0 @@
-# randy-garcia.github.io
