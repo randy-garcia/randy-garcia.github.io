@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ham Radio Flashcards</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-back-bg: #0f2942;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --accent: #38bdf8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .level-selector {
+      display: flex;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+
+    .level-btn {
+      flex: 1;
+      padding: 8px 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .level-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .stats-bar {
+      width: 100%;
+      max-width: 520px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 6px 4px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-container {
+      width: 100%;
+      max-width: 520px;
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+
+    .filter-bar {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .filter-select, .search-input {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .filter-select { flex: 1; }
+    .search-input { width: 120px; }
+
+    .flashcard-container {
+      width: 100%;
+      max-width: 520px;
+      height: 360px;
+      perspective: 1000px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .card-front {
+      background: var(--card-bg);
+      color: var(--text);
+    }
+
+    .card-back {
+      background: var(--card-back-bg);
+      color: var(--text);
+      transform: rotateY(180deg);
+      border-color: #0284c7;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .card-id {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .card-subelement {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-align: right;
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 0;
+      text-align: center;
+      overflow-y: auto;
+      user-select: text;
+    }
+
+    .card-text {
+      font-size: 1.05rem;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .card-back .card-text {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+    .status-badge.mastered { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .status-badge.review { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .status-badge.unseen { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+
+    .controls {
+      width: 100%;
+      max-width: 520px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr 1.2fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      padding: 12px 6px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn:active { transform: scale(0.96); }
+    .btn-secondary { background: #334155; color: var(--text); }
+    .btn-wrong { background: var(--danger); color: white; }
+    .btn-right { background: var(--success); color: white; }
+
+    .tool-bar {
+      width: 100%;
+      max-width: 520px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 6px;
+      border-radius: 6px;
+      font-size: 0.725rem;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tool-btn:hover { color: var(--text); border-color: var(--text-muted); }
+    .tool-btn.danger { color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
+    .tool-btn.danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+
+    .import-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 12px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .import-zone:hover { border-color: var(--accent); }
+
+    textarea.import-textarea {
+      width: 100%;
+      height: 120px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Ham Radio Flashcards</h1>
+    <div class="level-selector">
+      <button class="level-btn active" id="btn-tech" onclick="switchLevel('technician')">Technician</button>
+      <button class="level-btn" id="btn-gen" onclick="switchLevel('general')">General</button>
+      <button class="level-btn" id="btn-extra" onclick="switchLevel('extra')">Extra</button>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="stat-val" id="stat-total">0</div>
+      <div class="stat-lbl">Pool Count</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="stat-mastered" style="color:#4ade80">0</div>
+      <div class="stat-lbl">Right</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="stat-review" style="color:#f87171">0</div>
+      <div class="stat-lbl">Wrong</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="stat-accuracy">0%</div>
+      <div class="stat-lbl">Mastery</div>
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <div class="filter-bar">
+    <select class="filter-select" id="filter-select" onchange="applyFilters()">
+      <option value="all">All Questions</option>
+      <option value="unseen">Unseen Only</option>
+      <option value="review">Needs Review (Wrong)</option>
+      <option value="mastered">Mastered (Right)</option>
+    </select>
+    <input type="text" class="search-input" id="search-input" placeholder="Search ID/Text..." oninput="applyFilters()">
+  </div>
+
+  <div class="flashcard-container" onclick="flipCard()">
+    <div class="flashcard" id="flashcard">
+      <div class="card-face card-front">
+        <div class="card-header">
+          <span class="card-id" id="card-id-front">---</span>
+          <span class="card-subelement" id="card-sub-front">---</span>
+        </div>
+        <div class="card-body">
+          <div class="card-text" id="card-q">Loading... Click "Import Pool" if empty.</div>
+        </div>
+        <div class="card-footer">
+          <span id="card-index">Card 0 of 0</span>
+          <span class="status-badge unseen" id="status-badge">Unseen</span>
+        </div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-header">
+          <span class="card-id" id="card-id-back">---</span>
+          <span class="card-subelement">CORRECT ANSWER</span>
+        </div>
+        <div class="card-body">
+          <div class="card-text" id="card-a">Answer text will appear here</div>
+        </div>
+        <div class="card-footer">
+          <span>Tap to flip back</span>
+          <span style="color:#38bdf8; font-weight:600;">Correct Answer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-secondary" onclick="prevCard()">&#8592; Prev</button>
+    <button class="btn btn-secondary" onclick="nextCard()">Next &#8594;</button>
+    <button class="btn btn-wrong" onclick="markCard(false)">&#10005; Wrong</button>
+    <button class="btn btn-right" onclick="markCard(true)">&#10003; Right</button>
+  </div>
+
+  <div class="tool-bar">
+    <button class="tool-btn" onclick="openImportModal()">&#128190; Import Pool</button>
+    <button class="tool-btn" onclick="exportData()">&#128228; Export Backup</button>
+    <button class="tool-btn" onclick="triggerRestoreData()">&#128229; Restore Backup</button>
+    <button class="tool-btn" onclick="shuffleCards()">&#128256; Shuffle</button>
+    <button class="tool-btn" onclick="resetProgress()">Reset Progress</button>
+    <button class="tool-btn danger" onclick="clearPoolPrompt()">&#128465; Clear Pool</button>
+  </div>
+
+  <input type="file" id="restore-file-input" style="display:none;" accept=".json" onchange="handleRestoreFile(event)">
+
+  <!-- Import Modal -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Import Question Pool</div>
+        <button class="modal-close" onclick="closeImportModal()">&times;</button>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+        Select target class (<strong id="target-class-label">Technician</strong>) and drop your JSON pool file or paste below:
+      </p>
+      
+      <div class="import-zone" onclick="document.getElementById('file-input').click()">
+        <p style="font-size:0.85rem; font-weight:600; color:var(--accent);">Choose or Drag & Drop File</p>
+        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Supports JSON array or standard NCVEC .txt files</p>
+        <input type="file" id="file-input" style="display:none;" accept=".txt,.json" onchange="handleFileSelect(event)">
+      </div>
+
+      <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">Or paste JSON / NCVEC text directly:</p>
+      <textarea class="import-textarea" id="import-text" placeholder='[{"id":"T1A01","correct":2,"refs":"[97.1]","question":"...","answers":["Option A","Option B","Option C","Option D"],"correct_letter":"C"}]'></textarea>
+      
+      <button class="btn btn-right" style="width:100%;" onclick="processTextImport()">Parse & Save Pool</button>
+    </div>
+  </div>
+
+  <script>
+    let currentLevel = 'technician';
+    let pools = { technician: [], general: [], extra: [] };
+    let userProgress = {};
+    let currentDeck = [];
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLocalStorage();
+      switchLevel('technician');
+      setupKeyboardAndTouch();
+    });
+
+    function loadLocalStorage() {
+      const savedProg = localStorage.getItem('ham_flashcards_progress');
+      if (savedProg) {
+        try { userProgress = JSON.parse(savedProg); } catch (e) { userProgress = {}; }
+      }
+
+      const savedPools = localStorage.getItem('ham_flashcards_pools');
+      if (savedPools) {
+        try { pools = JSON.parse(savedPools); } catch (e) {}
+      }
+    }
+
+    function saveLocalStorage() {
+      localStorage.setItem('ham_flashcards_progress', JSON.stringify(userProgress));
+      localStorage.setItem('ham_flashcards_pools', JSON.stringify(pools));
+    }
+
+    function switchLevel(level) {
+      currentLevel = level;
+      document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`btn-${level === 'technician' ? 'tech' : level === 'general' ? 'gen' : 'extra'}`).classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const fullBank = pools[currentLevel] || [];
+      const filter = document.getElementById('filter-select').value;
+      const search = document.getElementById('search-input').value.trim().toUpperCase();
+
+      currentDeck = fullBank.filter(card => {
+        const id = card[0] || "";
+        const status = userProgress[id] || 'unseen';
+
+        let matchesFilter = true;
+        if (filter === 'unseen') matchesFilter = status === 'unseen';
+        else if (filter === 'review') matchesFilter = status === 'review';
+        else if (filter === 'mastered') matchesFilter = status === 'mastered';
+
+        let matchesSearch = true;
+        if (search) {
+          matchesSearch = id.toUpperCase().includes(search) || 
+                        (card[2] && card[2].toUpperCase().includes(search)) || 
+                        (card[3] && card[3].toUpperCase().includes(search));
+        }
+
+        return matchesFilter && matchesSearch;
+      });
+
+      currentIndex = 0;
+      isFlipped = false;
+      document.getElementById('flashcard').classList.remove('flipped');
+      updateStats();
+      renderCard();
+    }
+
+    function updateStats() {
+      const fullBank = pools[currentLevel] || [];
+      let total = fullBank.length;
+      let mastered = 0;
+      let review = 0;
+
+      fullBank.forEach(card => {
+        const id = card[0];
+        const st = userProgress[id];
+        if (st === 'mastered') mastered++;
+        else if (st === 'review') review++;
+      });
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-mastered').innerText = mastered;
+      document.getElementById('stat-review').innerText = review;
+
+      const accuracy = (mastered + review) > 0 ? Math.round((mastered / (mastered + review)) * 100) : 0;
+      document.getElementById('stat-accuracy').innerText = accuracy + '%';
+
+      const progressPct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+      document.getElementById('progress-bar').style.width = progressPct + '%';
+    }
+
+    function renderCard() {
+      if (currentDeck.length === 0) {
+        document.getElementById('card-id-front').innerText = "EMPTY";
+        document.getElementById('card-id-back').innerText = "EMPTY";
+        document.getElementById('card-sub-front').innerText = "No Questions Available";
+        document.getElementById('card-q').innerText = pools[currentLevel].length === 0 ?
+          `No questions loaded for ${currentLevel.toUpperCase()}. Click "Import Pool" below to load your JSON file.` :
+          "No questions match your active filter/search parameters.";
+        document.getElementById('card-a').innerText = "Import pool or clear search filter.";
+        document.getElementById('card-index').innerText = "0 of 0";
+        document.getElementById('status-badge').innerText = "-";
+        document.getElementById('status-badge').className = "status-badge unseen";
+        return;
+      }
+
+      if (currentIndex >= currentDeck.length) currentIndex = 0;
+      if (currentIndex < 0) currentIndex = currentDeck.length - 1;
+
+      const card = currentDeck[currentIndex];
+      const id = card[0] || "N/A";
+      const subelement = card[1] || "General";
+      const qText = card[2] || "Missing question text";
+      const aText = card[3] || "Missing answer text";
+      const status = userProgress[id] || 'unseen';
+
+      document.getElementById('card-id-front').innerText = id;
+      document.getElementById('card-id-back').innerText = id;
+      document.getElementById('card-sub-front').innerText = subelement;
+      document.getElementById('card-q').innerText = qText;
+      document.getElementById('card-a').innerText = aText;
+      document.getElementById('card-index').innerText = `Card ${currentIndex + 1} of ${currentDeck.length}`;
+
+      const badge = document.getElementById('status-badge');
+      if (status === 'mastered') {
+        badge.innerText = 'Mastered';
+        badge.className = 'status-badge mastered';
+      } else if (status === 'review') {
+        badge.innerText = 'Needs Review';
+        badge.className = 'status-badge review';
+      } else {
+        badge.innerText = 'Unseen';
+        badge.className = 'status-badge unseen';
+      }
+
+      if (isFlipped) {
+        isFlipped = false;
+        document.getElementById('flashcard').classList.remove('flipped');
+      }
+    }
+
+    function flipCard() {
+      if (currentDeck.length === 0) return;
+      isFlipped = !isFlipped;
+      document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+    }
+
+    function nextCard() {
+      if (currentDeck.length === 0) return;
+      currentIndex = (currentIndex + 1) % currentDeck.length;
+      renderCard();
+    }
+
+    function prevCard() {
+      if (currentDeck.length === 0) return;
+      currentIndex = (currentIndex - 1 + currentDeck.length) % currentDeck.length;
+      renderCard();
+    }
+
+    function markCard(isCorrect) {
+      if (currentDeck.length === 0) return;
+      const card = currentDeck[currentIndex];
+      const id = card[0];
+
+      if (id && id !== "N/A") {
+        userProgress[id] = isCorrect ? 'mastered' : 'review';
+        saveLocalStorage();
+        updateStats();
+      }
+      nextCard();
+    }
+
+    function shuffleCards() {
+      for (let i = currentDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+      }
+      currentIndex = 0;
+      renderCard();
+    }
+
+    function resetProgress() {
+      if (confirm(`Reset all learning progress for ${currentLevel.toUpperCase()}?`)) {
+        const fullBank = pools[currentLevel] || [];
+        fullBank.forEach(card => { if (card[0]) delete userProgress[card[0]]; });
+        saveLocalStorage();
+        applyFilters();
+      }
+    }
+
+    // Clear Question Pool Options
+    function clearPoolPrompt() {
+      if (pools[currentLevel].length === 0) {
+        alert(`The ${currentLevel.toUpperCase()} question pool is already empty.`);
+        return;
+      }
+
+      const choice = confirm(`Clear question pool for ${currentLevel.toUpperCase()}?\n\nPress OK to clear ONLY ${currentLevel.toUpperCase()}.\nPress Cancel to abort.`);
+      if (choice) {
+        pools[currentLevel] = [];
+        saveLocalStorage();
+        alert(`${currentLevel.toUpperCase()} question pool has been cleared.`);
+        applyFilters();
+      }
+    }
+
+    // Export Progress & Loaded Pools to JSON Backup File
+    function exportData() {
+      const backupObj = {
+        version: "1.0",
+        exportDate: new Date().toISOString(),
+        userProgress: userProgress,
+        pools: pools
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `ham_flashcards_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Trigger Restore Backup Input
+    function triggerRestoreData() {
+      document.getElementById('restore-file-input').click();
+    }
+
+    function handleRestoreFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (importedData.userProgress || importedData.pools) {
+            if (importedData.userProgress) userProgress = importedData.userProgress;
+            if (importedData.pools) pools = importedData.pools;
+            saveLocalStorage();
+            alert("Backup restored successfully across all levels!");
+            applyFilters();
+          } else {
+            alert("Invalid backup file format. Missing user progress or pools.");
+          }
+        } catch (err) {
+          alert("Error parsing backup file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function openImportModal() {
+      document.getElementById('target-class-label').innerText = currentLevel.toUpperCase();
+      document.getElementById('import-modal').classList.add('active');
+    }
+
+    function closeImportModal() {
+      document.getElementById('import-modal').classList.remove('active');
+      document.getElementById('import-text').value = '';
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('import-text').value = e.target.result;
+        processTextImport();
+      };
+      reader.readAsText(file);
+    }
+
+    // Extract exact option text across all known JSON formats
+    function extractOptionText(item) {
+      if (item.answer_text) return String(item.answer_text);
+      if (item.correct_answer_text) return String(item.correct_answer_text);
+
+      if (Array.isArray(item.answers)) {
+        if (typeof item.correct === 'number' && item.answers[item.correct] !== undefined) {
+          return String(item.answers[item.correct]);
+        }
+        const letterVal = item.correct_letter || item.answer || item.correct;
+        if (letterVal !== undefined && letterVal !== null) {
+          const lStr = String(letterVal).trim().toUpperCase();
+          const letterIndexMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, '0': 0, '1': 1, '2': 2, '3': 3 };
+          if (letterIndexMap[lStr] !== undefined && item.answers[letterIndexMap[lStr]] !== undefined) {
+            return String(item.answers[letterIndexMap[lStr]]);
+          }
+        }
+      }
+
+      let rawAns = item.answer !== undefined ? item.answer : (item.correct_letter || item.correct_answer || item.correct);
+      if (rawAns === undefined || rawAns === null) return "No answer specified";
+
+      let ansStr = String(rawAns).trim();
+
+      if (ansStr.length > 4 && !/^[a-d0-3]\.?$/i.test(ansStr)) {
+        return ansStr;
+      }
+
+      let letter = ansStr.replace(/[\(\)\.\s]/g, '').toLowerCase();
+      const numMap = { '0': 'a', '1': 'b', '2': 'c', '3': 'd' };
+      if (numMap[letter]) letter = numMap[letter];
+
+      for (let k in item) {
+        if (k.toLowerCase() === letter) {
+          return String(item[k]);
+        }
+      }
+
+      const choices = item.options || item.choices;
+      if (choices) {
+        if (Array.isArray(choices)) {
+          const idxMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+          if (idxMap[letter] !== undefined && choices[idxMap[letter]] !== undefined) {
+            return String(choices[idxMap[letter]]);
+          }
+        } else if (typeof choices === 'object') {
+          for (let k in choices) {
+            if (k.toLowerCase() === letter) {
+              return String(choices[k]);
+            }
+          }
+        }
+      }
+
+      return ansStr;
+    }
+
+    function processTextImport() {
+      const raw = document.getElementById('import-text').value.trim();
+      if (!raw) { alert('Please paste JSON/text or upload a valid file.'); return; }
+
+      let parsedCards = [];
+
+      if (raw.startsWith('[') || raw.startsWith('{')) {
+        try {
+          let json = JSON.parse(raw);
+          let list = [];
+
+          if (Array.isArray(json)) {
+            list = json;
+          } else if (json.questions && Array.isArray(json.questions)) {
+            list = json.questions;
+          } else if (json.data && Array.isArray(json.data)) {
+            list = json.data;
+          } else if (typeof json === 'object' && json !== null) {
+            list = Object.values(json);
+          }
+
+          parsedCards = list.map(item => {
+            if (!item || typeof item !== 'object') return null;
+
+            const id = item.id || item.code || item.question_id || item.Code || item.ID || "N/A";
+            
+            let rawSub = item.refs || item.ref || item.subelement || item.section || item.category || "General";
+            if (Array.isArray(rawSub)) rawSub = rawSub.join(', ');
+            let sub = String(rawSub).replace(/^\[(.*?)\]$/, '$1');
+            if (sub && !sub.toLowerCase().includes('rule') && !sub.toLowerCase().includes('subelement')) {
+              sub = `Rule ${sub}`;
+            }
+
+            const qText = item.question || item.question_text || item.Question || item.text || "";
+            const aText = extractOptionText(item);
+
+            return [String(id), String(sub), String(qText), String(aText)];
+          }).filter(card => card !== null && card[0] !== "N/A" && card[2].length > 0);
+
+        } catch (e) {
+          console.error("JSON parse failed, trying NCVEC text parser...", e);
+        }
+      }
+
+      if (parsedCards.length === 0) {
+        const questionBlocks = raw.split(/(?=\n[TGE]\d[A-Z]\d{2}\s*\([A-D]\))/g);
+        
+        questionBlocks.forEach(block => {
+          const match = block.match(/([TGE]\d[A-Z]\d{2})\s*\(([A-D])\)\s*(?:\[(.*?)\])?\n([\s\S]*)/);
+          if (match) {
+            const id = match[1];
+            const correctLetter = match[2];
+            const sub = match[3] || id.substring(0, 3);
+            const body = match[4];
+
+            const lines = body.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            let qTextLines = [];
+            let options = {};
+
+            lines.forEach(line => {
+              const optMatch = line.match(/^([A-D])\.\s*(.*)/);
+              if (optMatch) {
+                options[optMatch[1]] = optMatch[2];
+              } else if (Object.keys(options).length === 0 && !line.startsWith('~~')) {
+                qTextLines.push(line);
+              }
+            });
+
+            const qText = qTextLines.join(' ');
+            const aText = options[correctLetter] || `Option (${correctLetter})`;
+
+            if (id && qText) {
+              parsedCards.push([id, sub, qText, aText]);
+            }
+          }
+        });
+      }
+
+      if (parsedCards.length > 0) {
+        pools[currentLevel] = parsedCards;
+        saveLocalStorage();
+        alert(`Successfully imported ${parsedCards.length} questions into ${currentLevel.toUpperCase()} pool!`);
+        closeImportModal();
+        applyFilters();
+      } else {
+        alert("Could not parse valid questions. Ensure format matches expected JSON structure or NCVEC text.");
+      }
+    }
+
+    function setupKeyboardAndTouch() {
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+        if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+        else if (e.code === 'ArrowRight') nextCard();
+        else if (e.code === 'ArrowLeft') prevCard();
+        else if (e.code === 'KeyM' || e.code === 'Digit1') markCard(true);
+        else if (e.code === 'KeyR' || e.code === 'Digit2') markCard(false);
+      });
+    }
+  </script>
+</body>
+</html>
