@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ham Radio Flashcards</title>
+  <title>Ham Radio Flashcards & Quiz Engine</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -52,6 +52,34 @@
       font-weight: 700;
       color: var(--text);
       margin-bottom: 8px;
+    }
+
+    .mode-switch {
+      display: flex;
+      background: #0284c7;
+      padding: 3px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      color: #e0f2fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--card-bg);
+      color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .level-selector {
@@ -155,7 +183,7 @@
     .flashcard-container {
       width: 100%;
       max-width: 520px;
-      height: 360px;
+      height: 380px;
       perspective: 1000px;
       cursor: pointer;
       margin-bottom: 12px;
@@ -187,7 +215,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px;
+      padding: 18px;
       overflow: hidden;
     }
 
@@ -234,9 +262,10 @@
     .card-body {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 12px 0;
+      padding: 10px 0;
       text-align: center;
       overflow-y: auto;
       user-select: text;
@@ -251,6 +280,46 @@
     .card-back .card-text {
       color: #38bdf8;
       font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .distractors-toggle {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.725rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s;
+    }
+    .distractors-toggle:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+    .distractors-list {
+      display: none;
+      width: 100%;
+      text-align: left;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .distractors-list.active { display: block; }
+
+    .distractor-item {
+      padding: 4px 6px;
+      border-radius: 4px;
+      margin-bottom: 3px;
+      color: var(--text-muted);
+    }
+    .distractor-item.correct {
+      color: #4ade80;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.15);
     }
 
     .card-footer {
@@ -301,6 +370,84 @@
     .btn-secondary { background: #334155; color: var(--text); }
     .btn-wrong { background: var(--danger); color: white; }
     .btn-right { background: var(--success); color: white; }
+
+    .quiz-container {
+      display: none;
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .quiz-container.active { display: block; }
+
+    .quiz-question {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 12px 0 16px 0;
+      text-align: center;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .quiz-opt-btn {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.35;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .quiz-opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #132238;
+    }
+
+    .quiz-opt-btn.correct {
+      background: rgba(34, 197, 94, 0.2) !important;
+      border-color: var(--success) !important;
+      color: #4ade80 !important;
+      font-weight: 600;
+    }
+
+    .quiz-opt-btn.incorrect {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--danger) !important;
+      color: #f87171 !important;
+    }
+
+    .quiz-opt-letter {
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .quiz-feedback {
+      min-height: 24px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
 
     .tool-bar {
       width: 100%;
@@ -392,6 +539,12 @@
 
   <header>
     <h1>Ham Radio Flashcards</h1>
+    
+    <div class="mode-switch">
+      <button class="mode-btn active" id="mode-flashcard-btn" onclick="setAppMode('flashcard')">📇 Flashcard Mode</button>
+      <button class="mode-btn" id="mode-quiz-btn" onclick="setAppMode('quiz')">📝 Quiz Mode</button>
+    </div>
+
     <div class="level-selector">
       <button class="level-btn active" id="btn-tech" onclick="switchLevel('technician')">Technician</button>
       <button class="level-btn" id="btn-gen" onclick="switchLevel('general')">General</button>
@@ -432,7 +585,8 @@
     <input type="text" class="search-input" id="search-input" placeholder="Search ID/Text..." oninput="applyFilters()">
   </div>
 
-  <div class="flashcard-container" onclick="flipCard()">
+  <!-- Flashcard View Container -->
+  <div class="flashcard-container" id="flashcard-view-container" onclick="flipCard()">
     <div class="flashcard" id="flashcard">
       <div class="card-face card-front">
         <div class="card-header">
@@ -454,6 +608,12 @@
         </div>
         <div class="card-body">
           <div class="card-text" id="card-a">Answer text will appear here</div>
+          
+          <!-- Options Enabled By Default -->
+          <button class="distractors-toggle" id="distractors-btn" onclick="toggleDistractors(event)">🙈 Hide Options</button>
+          <div class="distractors-list active" id="distractors-list" onclick="event.stopPropagation()">
+            <!-- Populated via JavaScript -->
+          </div>
         </div>
         <div class="card-footer">
           <span>Tap to flip back</span>
@@ -463,11 +623,31 @@
     </div>
   </div>
 
+  <!-- Quiz Mode View Container -->
+  <div class="quiz-container" id="quiz-view-container">
+    <div class="card-header">
+      <span class="card-id" id="quiz-id">---</span>
+      <span class="card-subelement" id="quiz-sub">---</span>
+    </div>
+    <div class="quiz-question" id="quiz-q">Question text goes here...</div>
+    
+    <div class="quiz-options" id="quiz-options-box">
+      <!-- Generated option buttons -->
+    </div>
+
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+
+    <div class="card-footer">
+      <span id="quiz-index">Question 1 of 1</span>
+      <span style="color:var(--accent); font-weight:600;" id="quiz-streak-badge">Streak: 0</span>
+    </div>
+  </div>
+
   <div class="controls">
     <button class="btn btn-secondary" onclick="prevCard()">&#8592; Prev</button>
     <button class="btn btn-secondary" onclick="nextCard()">Next &#8594;</button>
-    <button class="btn btn-wrong" onclick="markCard(false)">&#10005; Wrong</button>
-    <button class="btn btn-right" onclick="markCard(true)">&#10003; Right</button>
+    <button class="btn btn-wrong" id="btn-mark-wrong" onclick="markCard(false)">&#10005; Wrong</button>
+    <button class="btn btn-right" id="btn-mark-right" onclick="markCard(true)">&#10003; Right</button>
   </div>
 
   <div class="tool-bar">
@@ -506,18 +686,55 @@
   </div>
 
   <script>
+    let appMode = 'flashcard';
     let currentLevel = 'technician';
     let pools = { technician: [], general: [], extra: [] };
     let userProgress = {};
     let currentDeck = [];
     let currentIndex = 0;
     let isFlipped = false;
+    
+    let quizStreak = 0;
+    let quizAnswered = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       loadLocalStorage();
       switchLevel('technician');
       setupKeyboardAndTouch();
     });
+
+    function setAppMode(mode) {
+      appMode = mode;
+      document.getElementById('mode-flashcard-btn').classList.toggle('active', mode === 'flashcard');
+      document.getElementById('mode-quiz-btn').classList.toggle('active', mode === 'quiz');
+
+      const fcContainer = document.getElementById('flashcard-view-container');
+      const quizContainer = document.getElementById('quiz-view-container');
+      const btnWrong = document.getElementById('btn-mark-wrong');
+      const btnRight = document.getElementById('btn-mark-right');
+
+      if (mode === 'flashcard') {
+        fcContainer.style.display = 'block';
+        quizContainer.classList.remove('active');
+        btnWrong.style.display = 'flex';
+        btnRight.style.display = 'flex';
+      } else {
+        fcContainer.style.display = 'none';
+        quizContainer.classList.add('active');
+        btnWrong.style.display = 'none';
+        btnRight.style.display = 'none';
+      }
+
+      renderCurrentMode();
+    }
+
+    function renderCurrentMode() {
+      if (appMode === 'flashcard') {
+        renderCard();
+      } else {
+        renderQuiz();
+      }
+    }
 
     function loadLocalStorage() {
       const savedProg = localStorage.getItem('ham_flashcards_progress');
@@ -538,407 +755,3 @@
 
     function switchLevel(level) {
       currentLevel = level;
-      document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`btn-${level === 'technician' ? 'tech' : level === 'general' ? 'gen' : 'extra'}`).classList.add('active');
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const fullBank = pools[currentLevel] || [];
-      const filter = document.getElementById('filter-select').value;
-      const search = document.getElementById('search-input').value.trim().toUpperCase();
-
-      currentDeck = fullBank.filter(card => {
-        const id = card[0] || "";
-        const status = userProgress[id] || 'unseen';
-
-        let matchesFilter = true;
-        if (filter === 'unseen') matchesFilter = status === 'unseen';
-        else if (filter === 'review') matchesFilter = status === 'review';
-        else if (filter === 'mastered') matchesFilter = status === 'mastered';
-
-        let matchesSearch = true;
-        if (search) {
-          matchesSearch = id.toUpperCase().includes(search) || 
-                        (card[2] && card[2].toUpperCase().includes(search)) || 
-                        (card[3] && card[3].toUpperCase().includes(search));
-        }
-
-        return matchesFilter && matchesSearch;
-      });
-
-      currentIndex = 0;
-      isFlipped = false;
-      document.getElementById('flashcard').classList.remove('flipped');
-      updateStats();
-      renderCard();
-    }
-
-    function updateStats() {
-      const fullBank = pools[currentLevel] || [];
-      let total = fullBank.length;
-      let mastered = 0;
-      let review = 0;
-
-      fullBank.forEach(card => {
-        const id = card[0];
-        const st = userProgress[id];
-        if (st === 'mastered') mastered++;
-        else if (st === 'review') review++;
-      });
-
-      document.getElementById('stat-total').innerText = total;
-      document.getElementById('stat-mastered').innerText = mastered;
-      document.getElementById('stat-review').innerText = review;
-
-      const accuracy = (mastered + review) > 0 ? Math.round((mastered / (mastered + review)) * 100) : 0;
-      document.getElementById('stat-accuracy').innerText = accuracy + '%';
-
-      const progressPct = total > 0 ? Math.round((mastered / total) * 100) : 0;
-      document.getElementById('progress-bar').style.width = progressPct + '%';
-    }
-
-    function renderCard() {
-      if (currentDeck.length === 0) {
-        document.getElementById('card-id-front').innerText = "EMPTY";
-        document.getElementById('card-id-back').innerText = "EMPTY";
-        document.getElementById('card-sub-front').innerText = "No Questions Available";
-        document.getElementById('card-q').innerText = pools[currentLevel].length === 0 ?
-          `No questions loaded for ${currentLevel.toUpperCase()}. Click "Import Pool" below to load your JSON file.` :
-          "No questions match your active filter/search parameters.";
-        document.getElementById('card-a').innerText = "Import pool or clear search filter.";
-        document.getElementById('card-index').innerText = "0 of 0";
-        document.getElementById('status-badge').innerText = "-";
-        document.getElementById('status-badge').className = "status-badge unseen";
-        return;
-      }
-
-      if (currentIndex >= currentDeck.length) currentIndex = 0;
-      if (currentIndex < 0) currentIndex = currentDeck.length - 1;
-
-      const card = currentDeck[currentIndex];
-      const id = card[0] || "N/A";
-      const subelement = card[1] || "General";
-      const qText = card[2] || "Missing question text";
-      const aText = card[3] || "Missing answer text";
-      const status = userProgress[id] || 'unseen';
-
-      document.getElementById('card-id-front').innerText = id;
-      document.getElementById('card-id-back').innerText = id;
-      document.getElementById('card-sub-front').innerText = subelement;
-      document.getElementById('card-q').innerText = qText;
-      document.getElementById('card-a').innerText = aText;
-      document.getElementById('card-index').innerText = `Card ${currentIndex + 1} of ${currentDeck.length}`;
-
-      const badge = document.getElementById('status-badge');
-      if (status === 'mastered') {
-        badge.innerText = 'Mastered';
-        badge.className = 'status-badge mastered';
-      } else if (status === 'review') {
-        badge.innerText = 'Needs Review';
-        badge.className = 'status-badge review';
-      } else {
-        badge.innerText = 'Unseen';
-        badge.className = 'status-badge unseen';
-      }
-
-      if (isFlipped) {
-        isFlipped = false;
-        document.getElementById('flashcard').classList.remove('flipped');
-      }
-    }
-
-    function flipCard() {
-      if (currentDeck.length === 0) return;
-      isFlipped = !isFlipped;
-      document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
-    }
-
-    function nextCard() {
-      if (currentDeck.length === 0) return;
-      currentIndex = (currentIndex + 1) % currentDeck.length;
-      renderCard();
-    }
-
-    function prevCard() {
-      if (currentDeck.length === 0) return;
-      currentIndex = (currentIndex - 1 + currentDeck.length) % currentDeck.length;
-      renderCard();
-    }
-
-    function markCard(isCorrect) {
-      if (currentDeck.length === 0) return;
-      const card = currentDeck[currentIndex];
-      const id = card[0];
-
-      if (id && id !== "N/A") {
-        userProgress[id] = isCorrect ? 'mastered' : 'review';
-        saveLocalStorage();
-        updateStats();
-      }
-      nextCard();
-    }
-
-    function shuffleCards() {
-      for (let i = currentDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
-      }
-      currentIndex = 0;
-      renderCard();
-    }
-
-    function resetProgress() {
-      if (confirm(`Reset all learning progress for ${currentLevel.toUpperCase()}?`)) {
-        const fullBank = pools[currentLevel] || [];
-        fullBank.forEach(card => { if (card[0]) delete userProgress[card[0]]; });
-        saveLocalStorage();
-        applyFilters();
-      }
-    }
-
-    // Clear Question Pool Options
-    function clearPoolPrompt() {
-      if (pools[currentLevel].length === 0) {
-        alert(`The ${currentLevel.toUpperCase()} question pool is already empty.`);
-        return;
-      }
-
-      const choice = confirm(`Clear question pool for ${currentLevel.toUpperCase()}?\n\nPress OK to clear ONLY ${currentLevel.toUpperCase()}.\nPress Cancel to abort.`);
-      if (choice) {
-        pools[currentLevel] = [];
-        saveLocalStorage();
-        alert(`${currentLevel.toUpperCase()} question pool has been cleared.`);
-        applyFilters();
-      }
-    }
-
-    // Export Progress & Loaded Pools to JSON Backup File
-    function exportData() {
-      const backupObj = {
-        version: "1.0",
-        exportDate: new Date().toISOString(),
-        userProgress: userProgress,
-        pools: pools
-      };
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `ham_flashcards_backup_${new Date().toISOString().slice(0, 10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    // Trigger Restore Backup Input
-    function triggerRestoreData() {
-      document.getElementById('restore-file-input').click();
-    }
-
-    function handleRestoreFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          if (importedData.userProgress || importedData.pools) {
-            if (importedData.userProgress) userProgress = importedData.userProgress;
-            if (importedData.pools) pools = importedData.pools;
-            saveLocalStorage();
-            alert("Backup restored successfully across all levels!");
-            applyFilters();
-          } else {
-            alert("Invalid backup file format. Missing user progress or pools.");
-          }
-        } catch (err) {
-          alert("Error parsing backup file: " + err.message);
-        }
-      };
-      reader.readAsText(file);
-      event.target.value = '';
-    }
-
-    function openImportModal() {
-      document.getElementById('target-class-label').innerText = currentLevel.toUpperCase();
-      document.getElementById('import-modal').classList.add('active');
-    }
-
-    function closeImportModal() {
-      document.getElementById('import-modal').classList.remove('active');
-      document.getElementById('import-text').value = '';
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('import-text').value = e.target.result;
-        processTextImport();
-      };
-      reader.readAsText(file);
-    }
-
-    // Extract exact option text across all known JSON formats
-    function extractOptionText(item) {
-      if (item.answer_text) return String(item.answer_text);
-      if (item.correct_answer_text) return String(item.correct_answer_text);
-
-      if (Array.isArray(item.answers)) {
-        if (typeof item.correct === 'number' && item.answers[item.correct] !== undefined) {
-          return String(item.answers[item.correct]);
-        }
-        const letterVal = item.correct_letter || item.answer || item.correct;
-        if (letterVal !== undefined && letterVal !== null) {
-          const lStr = String(letterVal).trim().toUpperCase();
-          const letterIndexMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, '0': 0, '1': 1, '2': 2, '3': 3 };
-          if (letterIndexMap[lStr] !== undefined && item.answers[letterIndexMap[lStr]] !== undefined) {
-            return String(item.answers[letterIndexMap[lStr]]);
-          }
-        }
-      }
-
-      let rawAns = item.answer !== undefined ? item.answer : (item.correct_letter || item.correct_answer || item.correct);
-      if (rawAns === undefined || rawAns === null) return "No answer specified";
-
-      let ansStr = String(rawAns).trim();
-
-      if (ansStr.length > 4 && !/^[a-d0-3]\.?$/i.test(ansStr)) {
-        return ansStr;
-      }
-
-      let letter = ansStr.replace(/[\(\)\.\s]/g, '').toLowerCase();
-      const numMap = { '0': 'a', '1': 'b', '2': 'c', '3': 'd' };
-      if (numMap[letter]) letter = numMap[letter];
-
-      for (let k in item) {
-        if (k.toLowerCase() === letter) {
-          return String(item[k]);
-        }
-      }
-
-      const choices = item.options || item.choices;
-      if (choices) {
-        if (Array.isArray(choices)) {
-          const idxMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
-          if (idxMap[letter] !== undefined && choices[idxMap[letter]] !== undefined) {
-            return String(choices[idxMap[letter]]);
-          }
-        } else if (typeof choices === 'object') {
-          for (let k in choices) {
-            if (k.toLowerCase() === letter) {
-              return String(choices[k]);
-            }
-          }
-        }
-      }
-
-      return ansStr;
-    }
-
-    function processTextImport() {
-      const raw = document.getElementById('import-text').value.trim();
-      if (!raw) { alert('Please paste JSON/text or upload a valid file.'); return; }
-
-      let parsedCards = [];
-
-      if (raw.startsWith('[') || raw.startsWith('{')) {
-        try {
-          let json = JSON.parse(raw);
-          let list = [];
-
-          if (Array.isArray(json)) {
-            list = json;
-          } else if (json.questions && Array.isArray(json.questions)) {
-            list = json.questions;
-          } else if (json.data && Array.isArray(json.data)) {
-            list = json.data;
-          } else if (typeof json === 'object' && json !== null) {
-            list = Object.values(json);
-          }
-
-          parsedCards = list.map(item => {
-            if (!item || typeof item !== 'object') return null;
-
-            const id = item.id || item.code || item.question_id || item.Code || item.ID || "N/A";
-            
-            let rawSub = item.refs || item.ref || item.subelement || item.section || item.category || "General";
-            if (Array.isArray(rawSub)) rawSub = rawSub.join(', ');
-            let sub = String(rawSub).replace(/^\[(.*?)\]$/, '$1');
-            if (sub && !sub.toLowerCase().includes('rule') && !sub.toLowerCase().includes('subelement')) {
-              sub = `Rule ${sub}`;
-            }
-
-            const qText = item.question || item.question_text || item.Question || item.text || "";
-            const aText = extractOptionText(item);
-
-            return [String(id), String(sub), String(qText), String(aText)];
-          }).filter(card => card !== null && card[0] !== "N/A" && card[2].length > 0);
-
-        } catch (e) {
-          console.error("JSON parse failed, trying NCVEC text parser...", e);
-        }
-      }
-
-      if (parsedCards.length === 0) {
-        const questionBlocks = raw.split(/(?=\n[TGE]\d[A-Z]\d{2}\s*\([A-D]\))/g);
-        
-        questionBlocks.forEach(block => {
-          const match = block.match(/([TGE]\d[A-Z]\d{2})\s*\(([A-D])\)\s*(?:\[(.*?)\])?\n([\s\S]*)/);
-          if (match) {
-            const id = match[1];
-            const correctLetter = match[2];
-            const sub = match[3] || id.substring(0, 3);
-            const body = match[4];
-
-            const lines = body.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            let qTextLines = [];
-            let options = {};
-
-            lines.forEach(line => {
-              const optMatch = line.match(/^([A-D])\.\s*(.*)/);
-              if (optMatch) {
-                options[optMatch[1]] = optMatch[2];
-              } else if (Object.keys(options).length === 0 && !line.startsWith('~~')) {
-                qTextLines.push(line);
-              }
-            });
-
-            const qText = qTextLines.join(' ');
-            const aText = options[correctLetter] || `Option (${correctLetter})`;
-
-            if (id && qText) {
-              parsedCards.push([id, sub, qText, aText]);
-            }
-          }
-        });
-      }
-
-      if (parsedCards.length > 0) {
-        pools[currentLevel] = parsedCards;
-        saveLocalStorage();
-        alert(`Successfully imported ${parsedCards.length} questions into ${currentLevel.toUpperCase()} pool!`);
-        closeImportModal();
-        applyFilters();
-      } else {
-        alert("Could not parse valid questions. Ensure format matches expected JSON structure or NCVEC text.");
-      }
-    }
-
-    function setupKeyboardAndTouch() {
-      document.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-        if (e.code === 'Space') { e.preventDefault(); flipCard(); }
-        else if (e.code === 'ArrowRight') nextCard();
-        else if (e.code === 'ArrowLeft') prevCard();
-        else if (e.code === 'KeyM' || e.code === 'Digit1') markCard(true);
-        else if (e.code === 'KeyR' || e.code === 'Digit2') markCard(false);
-      });
-    }
-  </script>
-</body>
-</html>
